@@ -1,0 +1,79 @@
+<Screen2@MDScreen>:
+    name: "bandi_scr"
+    RecycleViewer : 
+        id: scroller
+    MDFloatingActionButton:
+        icon: "chevron-up"
+        md_bg_color: app.theme_cls.primary_color
+        on_release: scroller.scroll_y=1
+        right: self.width and root.right -10
+        y: 10
+
+
+<RecycleViewer>:
+    viewclass: 'MyCard' 
+    spacing: 40
+    padding:10, 10
+    id: rv
+    RecycleBoxLayout:
+        default_size_hint: 1, None
+        size_hint: 1, None
+        default_size: None, dp(300)
+        default_size_hint: 1, None
+        height: self.minimum_height
+        orientation: "vertical"
+        padding: 10
+        spacing: 5
+
+
+<MyCard>:
+    id : card
+    line_color:(0.2, 0.2, 0.2, 0.8)
+    line_color:root.color
+    shadow_softness: 12
+    shadow_offset : (0, 2)
+    orientation : "vertical"
+    MDBoxLayout: 
+        id : topbar_card
+        orientation: 'horizontal'
+        size_hint :(1,.2)
+        padding : 10, 10
+        spacing : 100
+        MDAnchorLayout:
+            anchor_x:"left"
+            MDBoxLayout:
+                orientation: "horizontal"
+                MDIconButton:
+                    icon_color : "red"
+                    icon: "delete"
+                    on_release : app.delete_item(root)
+                MyButt:
+                    md_bg_color : root.color
+                    text : root.fonte
+                    link: root.link
+                    on_release: print("openweb!-->",root.link);print(root) #app.open_web 
+
+        MDAnchorLayout:
+            anchor_x:"right"
+            MDLabel:
+                font_style : "Overline" 
+                text : root.date_str 
+    MDBoxLayout:
+        orientation:'horizontal'
+        padding : 10
+        ScrollView:
+            size_hint: (0.55, 1)
+            MDBoxLayout:
+                orientation :'vertical'
+                adaptive_height : True
+                MDLabel:
+                    text:root.oggetto
+                    padding :(10,20)
+                    adaptive_height: True
+        MDBoxLayout:
+            size_hint: (0.45, 1)
+            Image :
+                source : "src/"+root.img+".png"
+
+
+ 

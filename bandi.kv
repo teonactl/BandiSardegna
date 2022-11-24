@@ -1,0 +1,75 @@
+
+
+<DrawerClickableItem@MDNavigationDrawerItem>
+    focus_color: "#e7e4c0"
+    text_color: "#4a4939"
+    icon_color: "#4a4939"
+    ripple_color: "#c5bdd2"
+    selected_color: "#0c6c4d"
+
+
+<DrawerLabelItem@MDNavigationDrawerItem>
+    text_color: "#4a4939"
+    icon_color: "#4a4939"
+    focus_behavior: False
+    selected_color: "#4a4939"
+    _no_ripple_effect: True
+
+<MainScreen>:
+
+    MDTopAppBar:
+        id : topbar
+        pos_hint: {"top": 1}
+        elevation: 4
+        title: "Bandi Sardegna"
+        left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+
+    MDNavigationLayout:
+        size_hint_y: 1.0 - topbar.height/root.height
+        MDScreenManager:
+            id: screen_manager
+
+            Screen1:
+                id : fonti_scr
+            Screen2:
+                id: bandi_scr
+            Screen3:
+                id : wait_scr
+
+        MDNavigationDrawer:
+
+            id: nav_drawer
+            radius: (0, 16, 16, 0)
+
+            MDNavigationDrawerMenu:
+
+                MDNavigationDrawerHeader:
+                    title: "MyMenu"
+                    title_color: "#4a4939"
+                    #text: "Header text"
+                    spacing: "4dp"
+                    padding: "12dp", 0, 0, "56dp"
+
+      
+                DrawerClickableItem:
+                    #icon: "gmail"
+                    #right_text: "+99"
+                    #text_right_color: "#4a4939"
+                    text: "Fonti"
+                    on_release: 
+                        app.populate_fonti()
+                        screen_manager.current = "fonti_scr"
+                        nav_drawer.set_state("close")
+
+                DrawerClickableItem:
+                    #icon: "send"
+                    text: "Bandi"
+                    on_release: 
+                        screen_manager.current = "bandi_scr"
+                        nav_drawer.set_state("close")
+
+                MDNavigationDrawerDivider:
+
+                DrawerLabelItem:
+                    icon: "information-outline"
+                    text: "Info"
