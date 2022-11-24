@@ -46,7 +46,7 @@ Builder.load_file("screen2.kv")
 Builder.load_file("screen3.kv")
 
 
-store = JsonStore('db2.json')
+store = JsonStore('db.json')
 
 
 class MyCard(MDCard):
@@ -82,11 +82,13 @@ class RecycleViewer(RecycleView):
             o["img"] = b["fonte"]
             bl.append(o)
         self.data = bl
+        self.scroll_y=1
 
 
 class BandiApp(MDApp):
     def build(self):
-        self.theme_cls.material_style = "M3"   
+        self.theme_cls.material_style = "M3"  
+        self.store = store 
         #self.theme_cls.theme_style = "Dark"
         return MainScreen()
 
@@ -96,6 +98,10 @@ class BandiApp(MDApp):
             self.populate_fonti()
             self.root.ids.screen_manager.current="fonti_scr"
             self.root.ids.topbar.disabled = True
+
+        else: 
+            self.root.ids.screen_manager.current="bandi_scr"
+
 
     def populate_fonti(self):
         #print(self.root.ids.fonti_scr.ids)
@@ -162,6 +168,31 @@ class BandiApp(MDApp):
         self.root.ids.topbar.disabled = False
         self.root.ids.bandi_scr.ids.scroller.update()
         self.change_scr("bandi_scr")
+
+    def change_mode(self):
+        self.root.ids.screen_manager.current = "wait_scr"
+
+        store.store_load()
+        #print("sort-clock-descending", str(b.icon) == "sort-clock-descending")
+        if store["v_mode"] == "sort-clock-descending":
+            #print("ifff")
+            store.store_put("v_mode", "sort-clock-ascending")
+            store.store_sync()
+
+            bandi_list = sorted( self.store["bandi_list"], key=lambda but: but['inizio'],reverse = True) 
+
+
+        else:
+            #print("else-")
+            store.store_put("v_mode", "sort-clock-descending")
+            store.store_sync()
+
+            bandi_list = sorted( self.store["bandi_list"], key=lambda but: but['fine'],reverse = False) 
+        store.store_put("bandi_list", bandi_list)
+        store.store_sync()
+        self.root.ids.bandi_scr.ids.scroller.update()
+        self.root.ids.screen_manager.current = "bandi_scr"
+
 
 
 

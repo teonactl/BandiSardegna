@@ -21,9 +21,9 @@
         id : topbar
         pos_hint: {"top": 1}
         elevation: 4
-        title: "Bandi Sardegna"
+        title: str(len(app.store["bandi_list"]))+" Bandi"  if screen_manager.current =="bandi_scr" else ""
         left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
-
+        right_action_items: [["magnify", lambda x: app.search_cb()], [app.store["v_mode"], lambda x: app.change_mode()]] if screen_manager.current =="bandi_scr" else [[""]]
     MDNavigationLayout:
         size_hint_y: 1.0 - topbar.height/root.height
         MDScreenManager:
