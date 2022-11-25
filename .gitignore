@@ -1,4 +1,4 @@
-bin/*.aab
+bin/
 .buildozer/
 __pycache__/
 
