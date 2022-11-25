@@ -1,15 +1,17 @@
 <Screen2@MDScreen>:
     name: "bandi_scr"
-    RecycleViewer : 
-        id: scroller
-    MDFloatingActionButton:
-        icon: "chevron-up"
-        md_bg_color: app.theme_cls.primary_color
-        on_release: scroller.scroll_y=1
-        right: self.width and root.right -10
-        y: 10
+    FloatLayout:
+        RecycleViewer : 
+            id: scroller
+        MDFloatingActionButton:
+            icon: "chevron-up"
+            md_bg_color: app.theme_cls.accent_light
+            on_release: scroller.scroll_y=1
+            right: self.width and root.right -10
+            y: 10
 
 <RecycleViewer>:
+
     viewclass: 'MyCard' 
     spacing: 40
     padding:10, 10
@@ -28,10 +30,11 @@
 <MyCard>:
     id : card
     line_color:(0.2, 0.2, 0.2, 0.8)
-    line_color:root.color
+    line_color:app.theme_cls.accent_dark# root.color
     shadow_softness: 12
     shadow_offset : (0, 2)
     orientation : "vertical"
+    #md_bg_color: "121212" if app.store["style"] == "Dark" else app.theme_cls.accent_light
     MDBoxLayout: 
         id : topbar_card
         orientation: 'horizontal'
@@ -41,21 +44,27 @@
         MDAnchorLayout:
             anchor_x:"left"
             MDBoxLayout:
+
                 orientation: "horizontal"
                 MDIconButton:
-                    icon_color : "red"
+                    icon_color : app.theme_cls.accent_light #"red"
                     icon: "delete"
                     on_release : app.delete_item(root)
                 MyButt:
-                    md_bg_color : root.color
+                    font_style : "Button" 
+
+                    md_bg_color : app.theme_cls.accent_light #root.color
                     text : root.fonte
                     link: root.link
-                    on_release: print("openweb!-->",root.link);print(root) #app.open_web 
+                    on_release: app.open_web(self) 
 
         MDAnchorLayout:
             anchor_x:"right"
             MDLabel:
-                font_style : "Overline" 
+                text_color: app.theme_cls.primary_color
+
+                markup: True
+                font_style : "Subtitle2" 
                 text : root.date_str 
     MDBoxLayout:
         orientation:'horizontal'
@@ -66,6 +75,8 @@
                 orientation :'vertical'
                 adaptive_height : True
                 MDLabel:
+                    font_style : "Body1" 
+
                     text:root.oggetto
                     padding :(10,20)
                     adaptive_height: True
@@ -75,4 +86,12 @@
                 source : "src/"+root.img+".png"
 
 
- 
+<Content>
+    orientation: "vertical"
+    spacing: "12dp"
+    size_hint_y: None
+    id : dialog_id
+    MDTextField:
+        id: parola_chiave
+        hint_text: "Parola chiave"
+

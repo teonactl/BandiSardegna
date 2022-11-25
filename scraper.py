@@ -13,6 +13,8 @@ from datetime import datetime
 #@mainthread
 #def toast_m(text):
 #	toast(text)
+import uuid
+
 
 def sardegna_agricoltura():
 	#toast_m("Inizio a scaricare da Sardegna Agricoltura...")
@@ -69,6 +71,8 @@ def sardegna_agricoltura():
 				
 			bando["fonte"] = "sardegna_agricoltura"
 			bando["color"]= "greenyellow"
+			bando["uid"] = str(uuid.uuid1())
+
 
 			BANDI.append(bando)
 	#	toast_m("Finito!")
@@ -128,6 +132,8 @@ def sardegna_psr():
 			#print(anc[0]["href"])
 			bando["link"] = anc[0]["href"]
 			bando["color"]= "aquamarine"
+			bando["uid"] = str(uuid.uuid1())
+
 			BANDI.append(bando)
 #	toast_m("Finito!")
 	return BANDI
@@ -172,6 +178,7 @@ def regione_sardegna():
 		#print(li.text.split("Oggetto")[1].split("\n")[0][1:])
 		bando["oggetto"]=li.text.split("Oggetto")[1].split("\n")[0][1:].replace("\"", "\'")
 		bando["color"]= "yellowgreen"
+		bando["uid"] = str(uuid.uuid1())
 
 		BANDI.append(bando)
 #	toast_m("Finito!")

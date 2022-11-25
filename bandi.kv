@@ -20,12 +20,12 @@
     MDTopAppBar:
         id : topbar
         pos_hint: {"top": 1}
-        elevation: 4
         title: str(len(app.store["bandi_list"]))+" Bandi"  if screen_manager.current =="bandi_scr" else ""
-        left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
-        right_action_items: [["magnify", lambda x: app.search_cb()], [app.store["v_mode"], lambda x: app.change_mode()]] if screen_manager.current =="bandi_scr" else [[""]]
+        left_action_items: [["menu", lambda x : app.openmenu()]]
+        right_action_items: [["magnify", lambda x: app.search_dialog()], [app.store["v_mode"], lambda x: app.change_mode()]] if screen_manager.current =="bandi_scr" else [[""]]
     MDNavigationLayout:
-        size_hint_y: 1.0 - topbar.height/root.height
+        id: nav_id
+        size_hint_y: 1.0 - topbar.height/root.height 
         MDScreenManager:
             id: screen_manager
 
@@ -35,6 +35,8 @@
                 id: bandi_scr
             Screen3:
                 id : wait_scr
+            Screen3:
+                id : wait_scr
 
         MDNavigationDrawer:
 
@@ -42,9 +44,11 @@
             radius: (0, 16, 16, 0)
 
             MDNavigationDrawerMenu:
+                id: menu_id
+                
 
                 MDNavigationDrawerHeader:
-                    title: "MyMenu"
+                    title: "Bandi Sardegna"
                     title_color: "#4a4939"
                     #text: "Header text"
                     spacing: "4dp"
@@ -52,24 +56,66 @@
 
       
                 DrawerClickableItem:
-                    #icon: "gmail"
-                    #right_text: "+99"
+                    icon: "format-list-checks"
+                    right_text: str(len(app.store["fonti"]))
                     #text_right_color: "#4a4939"
                     text: "Fonti"
+
                     on_release: 
                         app.populate_fonti()
                         screen_manager.current = "fonti_scr"
                         nav_drawer.set_state("close")
 
                 DrawerClickableItem:
-                    #icon: "send"
+                    icon: "newspaper-variant-multiple-outline"
                     text: "Bandi"
+                    right_text: str(len(app.store["bandi_list"]))
+
+                    id : bandi_link
+                    #disabled : True if len(app.store["bandi_list"])==0 else False
+
                     on_release: 
                         screen_manager.current = "bandi_scr"
                         nav_drawer.set_state("close")
 
+#                DrawerClickableItem:
+#                    icon: "lightbulb-on-50"
+#                    text: "Cambia tema"
+#                    on_release: 
+#                        app.change_light()
+
                 MDNavigationDrawerDivider:
 
-                DrawerLabelItem:
+                DrawerClickableItem:
                     icon: "information-outline"
                     text: "Info"
+                    on_release: 
+                        app.info()
+                        nav_drawer.set_state("close")
+
+
+<Welcome>
+    orientation: "vertical"
+    spacing: "12dp"
+    adaptive_height: True
+    id : welcom
+    height: "300dp"
+    #width: "90dp"
+    ScrollView:
+        MDLabel:
+            markup: True
+            adaptive_height: True
+            text: welcom.text
+
+<Info>
+    orientation: "vertical"
+    spacing: "12dp"
+    adaptive_height: True
+    #height: "300dp"
+    id : info
+    on_touch_up :
+        app.wb("https://github.com/teonactl/BandiSardegna")
+    MDLabel:
+        markup: True
+        adaptive_height: True
+        text: info.text
