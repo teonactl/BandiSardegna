@@ -1,4 +1,3 @@
-bin/
 .buildozer/
 __pycache__/
-buildozer.spec
+

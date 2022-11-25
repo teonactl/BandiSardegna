@@ -35,9 +35,6 @@
                 id: bandi_scr
             Screen3:
                 id : wait_scr
-            Screen3:
-                id : wait_scr
-
         MDNavigationDrawer:
 
             id: nav_drawer
@@ -45,15 +42,18 @@
 
             MDNavigationDrawerMenu:
                 id: menu_id
-                
+
 
                 MDNavigationDrawerHeader:
-                    title: "Bandi Sardegna"
+                    title: ""
                     title_color: "#4a4939"
-                    #text: "Header text"
+                    text: "Bandi  Sardegna"
                     spacing: "4dp"
                     padding: "12dp", 0, 0, "56dp"
-
+        
+                    Image:
+                        source:"./src/Blogo.png"
+                    
       
                 DrawerClickableItem:
                     icon: "format-list-checks"
@@ -92,6 +92,7 @@
                     on_release: 
                         app.info()
                         nav_drawer.set_state("close")
+
 
 
 <Welcome>
