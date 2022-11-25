@@ -310,7 +310,7 @@ class BandiApp(MDApp):
             if query.strip().lower() in b["oggetto"].lower():
                 bl.append(b)
         bl = sorted( bl, key=lambda bando: bando['fine'],reverse = True if store["v_mode"] == "sort-clock-ascending" else False ) 
-        self.dialog.dismiss()
+        self.s_dialog.dismiss()
         self.root.ids.bandi_scr.ids.scroller.update_from_data(bl)
         n_finding = len(bl)
         store.store_sync()
