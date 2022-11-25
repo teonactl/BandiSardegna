@@ -79,7 +79,7 @@ class MyCard(MDCard):
     fonte = StringProperty()
     img = StringProperty()
     uid = StringProperty()
-   
+
 class MyButt(MDFlatButton):
     link = StringProperty()
 
@@ -131,12 +131,11 @@ class RecycleViewer(RecycleView):
         #print("new-data upd-data-->",len(self.data))
         self.scroll_y=1
 
-
     def on_touch_down(self, touch):
-        if touch.y > 679.0:
+        print(touch.y)
+        if touch.y > 1320: #679.0:
             return False
         return super(RecycleView, self).on_touch_down(touch) #pass the touch on
-
 
 
 class BandiApp(MDApp):
