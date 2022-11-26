@@ -1,8 +1,12 @@
+#: import RouletteScrollEffect kivymd.effects.roulettescroll.RouletteScrollEffect
+
 <Screen2@MDScreen>:
     name: "bandi_scr"
+
     FloatLayout:
         RecycleViewer : 
             id: scroller
+
         MDFloatingActionButton:
             icon: "chevron-up"
             md_bg_color: app.theme_cls.accent_light
@@ -11,11 +15,13 @@
             y: 10
 
 <RecycleViewer>:
-
+    effect_cls : RouletteScrollEffect
     viewclass: 'MyCard' 
     spacing: 40
     padding:10, 10
     id: rv
+    always_overscroll : False
+
     RecycleBoxLayout:
         default_size_hint: 1, None
         size_hint: 1, None
@@ -35,53 +41,59 @@
     shadow_offset : (0, 2)
     orientation : "vertical"
     #md_bg_color: "121212" if app.store["style"] == "Dark" else app.theme_cls.accent_light
+
     MDBoxLayout: 
         id : topbar_card
         orientation: 'horizontal'
         size_hint :(1,.2)
         padding : 10, 10
         spacing : 100
+
         MDAnchorLayout:
             anchor_x:"left"
-            MDBoxLayout:
 
+            MDBoxLayout:
                 orientation: "horizontal"
+
                 MDIconButton:
                     icon_color : app.theme_cls.accent_light #"red"
                     icon: "delete"
                     on_release : app.delete_item(root)
-                MyButt:
-                    font_style : "Button" 
 
-                    md_bg_color : app.theme_cls.accent_light #root.color
-                    text : root.fonte
-                    link: root.link
-                    on_release: app.open_web(self) 
+                MDIconButton:
+                    icon : "web"
+                    on_release : app.wb(root.link)
+                    line_color : app.theme_cls.accent_light
 
         MDAnchorLayout:
             anchor_x:"right"
+
             MDLabel:
                 text_color: app.theme_cls.primary_color
-
                 markup: True
                 font_style : "Subtitle2" 
                 text : root.date_str 
+
     MDBoxLayout:
         orientation:'horizontal'
         padding : 10
+
         ScrollView:
             size_hint: (0.55, 1)
+
             MDBoxLayout:
                 orientation :'vertical'
                 adaptive_height : True
+
                 MDLabel:
                     font_style : "Body1" 
-
                     text:root.oggetto
                     padding :(10,20)
                     adaptive_height: True
+
         MDBoxLayout:
             size_hint: (0.45, 1)
+
             Image :
                 source : "src/"+root.img+".png"
 
@@ -92,6 +104,12 @@
     size_hint_y: None
     id : dialog_id
     MDTextField:
+        color_mode : "custom"
+        line_color_focus: 0, 0, 0, 1
+        text_color_focus: 0, 0, 0, 1
+        hint_text_color_focus: 0, 0, 0, 1
+        multiline: False
+        on_text_validate : print("Val"); app.filtra_bandi(self)
         id: parola_chiave
         hint_text: "Parola chiave"
 

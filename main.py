@@ -1,42 +1,31 @@
 from kivy.lang import Builder
-from kivymd.app import MDApp
-from kivymd.uix.screen import MDScreen
-from kivy.uix.recycleview import RecycleView
+from kivy.utils import platform
+from kivy.storage.jsonstore import JsonStore
+from kivy.clock import mainthread
 
-from kivymd.uix.button import  MDFlatButton
 from kivy.properties import  StringProperty
-from kivymd.uix.card import MDCardSwipe, MDCard
-
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.floatlayout import MDFloatLayout
-
-from kivymd.uix.label import MDLabel
-
-from kivymd.uix.selectioncontrol import MDCheckbox
-
-from kivymd.uix.dialog import MDDialog
-
-
+from kivy.uix.recycleview import RecycleView
 from kivy.uix.image import Image
 
+from kivymd.app import MDApp
+from kivymd.toast import toast
 
-from kivy.storage.jsonstore import JsonStore
-
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.button import  MDFlatButton
+from kivymd.uix.card import  MDCard
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.label import MDLabel
+from kivymd.uix.selectioncontrol import MDCheckbox
+from kivymd.uix.dialog import MDDialog
 
 from datetime import datetime
 import threading
-
-from kivy.utils import platform
-from kivymd.toast import toast
-
-from kivy.clock import mainthread
-
 import webbrowser
-
 
 from scraper import *
 
-if platform == "linux":
+if platform in ["linux","windows"]:
     from kivy.core.window import Window
     Window.size = (450, 740)
 
@@ -63,14 +52,16 @@ Builder.load_file("screen3.kv")
 
 store = JsonStore('db.json')
 
+#Search Dialog class
 class Content(MDBoxLayout):
     pass
+#Welcome Dialog class
 class Welcome(MDBoxLayout):
     text = StringProperty(welcome_string)
-
+#Info Dialog class
 class Info(MDBoxLayout):
     text = StringProperty(info_string)
-
+ #Bando Card class
 class MyCard(MDCard):
     date_str = StringProperty()
     oggetto = StringProperty()
@@ -80,17 +71,13 @@ class MyCard(MDCard):
     img = StringProperty()
     uid = StringProperty()
 
-class MyButt(MDFlatButton):
-    link = StringProperty()
-
-
 class MainScreen(MDScreen):
     pass
 
+#Implementation of RecycleView to use in Bandi Screen
 class RecycleViewer(RecycleView):
     def __init__(self, **kwargs):
         super(RecycleViewer, self).__init__(**kwargs)
-        #self.data = store["bandi_list"]
         self.update()
     def update(self):
         bl = []
@@ -110,10 +97,9 @@ class RecycleViewer(RecycleView):
         if len(bl):
             store["db"]["initiated"]= True
             store.store_sync()
-            #print("new-data upd-->",len(self.data))
 
     def update_from_data(self, mydata):
-
+        #print("Updating from-->",mydata)
         bl = []
         for  b in mydata :
             o = {}
@@ -128,20 +114,19 @@ class RecycleViewer(RecycleView):
 
             bl.append(o)
         self.data = bl
-        #print("new-data upd-data-->",len(self.data))
         self.scroll_y=1
 
     def on_touch_down(self, touch):
-        print(touch.y)
-        if touch.y > 1320: #679.0:
+        if touch.y > MDApp.get_running_app().root.ids.topbar.y:
+        #if touch.y > 1320: #679.0:
             return False
         return super(RecycleView, self).on_touch_down(touch) #pass the touch on
 
 
+#Main App class
 class BandiApp(MDApp):
     def __init__(self, **kwargs):
         super(BandiApp, self).__init__(**kwargs)
-#        self.theme_cls.theme_style = store["style"]
 
     def build(self):
         self.theme_cls.material_style = "M3"  
@@ -150,29 +135,29 @@ class BandiApp(MDApp):
         self.theme_cls.primary_palette = "LightGreen"
         self.theme_cls.primary_hue = "100"
         self.theme_cls.accent_palette = "Green"
+        self.theme_cls.theme_style = store["style"]
         self.s_dialog = None
         self.i_dialog = None
         self.w_dialog = None
         return MainScreen()
-
+    #BUGGED!!!--> Theme not applying to cards inside RecycledView, inform the user to reload the app
     def change_light(self):
-        #BUGGED!!!
         store.store_load()
-        print("change_light")
-
+        self.root.ids.screen_manager.current="wait_scr"
         if store["style"] == "Light":
             self.theme_cls.theme_style = "Dark"
             store.store_put("style","Dark")
         else:
             self.theme_cls.theme_style = "Light"
             store.store_put("style","Light")
+        self.toast_m("Riavvia l'App per applicare  il nuovo tema!")
         store.store_sync()
-        self.root.ids.bandi_scr.ids.scroller.update()
+        self.root.ids.screen_manager.current="bandi_scr"
+
 
 
     def on_start(self):
         if not store["db"]["initiated"]:
-            #print("Not Initiated, going to Fonti Page")
             self.populate_fonti()
             self.root.ids.screen_manager.current="fonti_scr"
             self.root.ids.topbar.disabled = True
@@ -182,15 +167,12 @@ class BandiApp(MDApp):
         else: 
             self.root.ids.screen_manager.current="bandi_scr"
  
-    def open_web(self, but):
-        webbrowser.open(but.link.strip())
+
     def openmenu(self):
-        #print("pressedMENUUU")
         self.root.ids.nav_drawer.set_state("open")
         return True
 
     def populate_fonti(self):
-        #print(self.root.ids.fonti_scr.ids)
         main_box = self.root.ids.fonti_scr.ids.fonti_list
         main_box.clear_widgets()
         desc_row = MDBoxLayout(orientation="horizontal", size_hint =(1,.4))
@@ -205,27 +187,24 @@ class BandiApp(MDApp):
             row.add_widget(fonte_check)
             main_box.add_widget(row)
         f_l = MDFloatLayout()
-        conf_button = MDFlatButton(line_color= self.theme_cls.primary_light, text = "Aggiorna i bandi", on_release=self.wait_fonti, pos_hint={"center_y": .5 ,"center_x": .5})
+        conf_button = MDFlatButton(md_bg_color= self.theme_cls.primary_light, text = "Aggiorna i bandi", on_release=self.wait_fonti, pos_hint={"center_y": .5 ,"center_x": .5})
         f_l.add_widget(conf_button)
         main_box.add_widget(f_l)
 
 
     def wait_fonti(self,b):
-        #print("BUTTON??-->",b)
         fonti_dic = {}
         for item in b.parent.parent.children:
             for c in item.children:
-                #print("C-->",c)
                 if isinstance(c, MDCheckbox):
                     fonti_dic[c.id[0:-6]]= False if c.state == "normal" else True
-        #print("Fonti_dic =",fonti_dic)
+        #print("Fonti_dic-->",fonti_dic)
         if sum([fonti_dic[i] for i in fonti_dic])==0:
             toast("Seleziona almeno una fonte!")
             return
 
         store["fonti"]=fonti_dic
         store.store_sync()
-
         self.root.ids.screen_manager.current = "wait_scr"
         threading.Thread(target=self.aggiorna_fonti, args=(b,fonti_dic,)).start()
 
@@ -237,7 +216,6 @@ class BandiApp(MDApp):
         toast(text)
     @mainthread
     def prepare_graphics(self):
-
         self.root.ids.nav_id.children[0].children[0].children[0].children[2].disabled = False
         self.root.ids.topbar.disabled = False
         self.root.ids.bandi_scr.ids.scroller.update()
@@ -252,27 +230,19 @@ class BandiApp(MDApp):
         store.store_put("bandi_list", [])
         store.store_put("bandi_list",bandi_list)
         store.store_sync()
-        #print(f"{len(store['bandi_list'])} Bandi in -->")
         self.prepare_graphics()
 
     def change_mode(self):
         self.root.ids.screen_manager.current = "wait_scr"
-
         store.store_load()
-        #print("sort-clock-descending", str(b.icon) == "sort-clock-descending")
         if store["v_mode"] == "sort-clock-descending":
-            #print("ifff")
             store.store_put("v_mode", "sort-clock-ascending")
             store.store_sync()
             bandi_list = sorted( self.store["bandi_list"], key=lambda bando: bando['inizio'],reverse = True) 
-        #print(self.root.ids.topbar.title)
-
 
         else:
-            #print("else-")
             store.store_put("v_mode", "sort-clock-descending")
             store.store_sync()
-
             bandi_list = sorted( self.store["bandi_list"], key=lambda bando: bando['fine'],reverse = False) 
         store.store_put("bandi_list", bandi_list)
         store.store_sync()
@@ -280,12 +250,9 @@ class BandiApp(MDApp):
         self.root.ids.screen_manager.current = "bandi_scr"
 
 
-
-
     def delete_item(self, item):
-        #print("delete_item-->",item.uid)
+        #print("Delete_item-->",item.uid)
         self.root.ids.screen_manager.current = "wait_scr"
-
         store.store_load()
         bl = []
         for b in store["bandi_list"]:
@@ -293,10 +260,8 @@ class BandiApp(MDApp):
                 bl.append(b)
         store.store_put("bandi_list", bl)
         store.store_sync()
-
         self.root.ids.bandi_scr.ids.scroller.update()
         self.root.ids.screen_manager.current = "bandi_scr"
-        #print(self.root.ids.topbar.title)
         self.root.ids.topbar.title = f"{len(store['bandi_list'])} Bandi"
     
 
@@ -313,9 +278,7 @@ class BandiApp(MDApp):
         self.root.ids.bandi_scr.ids.scroller.update_from_data(bl)
         n_finding = len(bl)
         store.store_sync()
-
         self.root.ids.screen_manager.current = "bandi_scr"
-        #print(self.root.ids.topbar.title)
         if query != "":
             self.root.ids.topbar.title = f"{n_finding} / {len(store['bandi_list'])} Bandi"
 
@@ -329,8 +292,7 @@ class BandiApp(MDApp):
                 buttons=[
                     MDFlatButton(
                         text="Cerca",
-                        theme_text_color="Custom",
-                        text_color=self.theme_cls.primary_color,
+                        text_color ="black",
                         on_release = self.filtra_bandi
                     ),
                 ],

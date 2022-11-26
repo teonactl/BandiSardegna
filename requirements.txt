@@ -1,0 +1,5 @@
+kivy
+kivymd
+requests
+urllib3
+beautifulsoup4
