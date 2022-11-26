@@ -30,8 +30,8 @@ Se vuoi utilizzare una fonte non presente nell'applicazione, puoi mandare una ma
 
 ## Screenshots
 
-![Alt text]( src/screenshot1.png, "Screenshot 1")
-![Alt text]( src/screenshot2.png, "Screenshot 2")
-![Alt text]( src/screenshot3.png, "Screenshot 3")
+![Alt text](src/screenshot1.png "Screenshot 1")
+![Alt text](src/screenshot2.png  "Screenshot 2")
+![Alt text](src/screenshot3.png  "Screenshot 3")
 
 
