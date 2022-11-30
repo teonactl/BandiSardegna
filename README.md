@@ -1,6 +1,5 @@
 # BandiSardegna
-![Alt text](src/Blogo.png 
- "Bandi Sardegna Logo")
+![Alt text](src/Blogo.png  "Bandi Sardegna Logo")
 
 
 Un App multipiattaforma sviluppata con Python, Kivy e KivyMD per tenere sotto controllo i bandi rivolti ai cittadini della Regione Sardegna.

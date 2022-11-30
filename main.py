@@ -83,7 +83,7 @@ class RecycleViewer(RecycleView):
         bl = []
         for  b in store["bandi_list"] :
             o = {}
-            scadenza = datetime.fromtimestamp(b["fine"]).strftime("%d/%m/%Y") if datetime.fromtimestamp(b["fine"]).strftime("%d/%m/%Y") != "01/01/2099" else "[b]SOSPESO[/b]"
+            scadenza = datetime.fromtimestamp(b["fine"]).strftime("%d/%m/%Y") if datetime.fromtimestamp(b["fine"]).strftime("%d/%m/%Y") != "01/01/1970" else "[b]SOSPESO[/b]"
             o["date_str"] = "Inizio: "+datetime.fromtimestamp(b["inizio"]).strftime("%d/%m/%Y")+"\n"+ "Scadenza: "+scadenza
             o["oggetto"] = b["oggetto"]
             o["color"] =b["color"]
@@ -103,7 +103,7 @@ class RecycleViewer(RecycleView):
         bl = []
         for  b in mydata :
             o = {}
-            scadenza = datetime.fromtimestamp(b["fine"]).strftime("%d/%m/%Y") if datetime.fromtimestamp(b["fine"]).strftime("%d/%m/%Y") != "01/01/2099" else "[b]SOSPESO[/b]"
+            scadenza = datetime.fromtimestamp(b["fine"]).strftime("%d/%m/%Y") if datetime.fromtimestamp(b["fine"]).strftime("%d/%m/%Y") != "01/01/1970" else "[b]SOSPESO[/b]"
             o["date_str"] = "Inizio: "+datetime.fromtimestamp(b["inizio"]).strftime("%d/%m/%Y")+"\n"+ "Scadenza: "+scadenza
             o["oggetto"] = b["oggetto"]
             o["color"] =b["color"]

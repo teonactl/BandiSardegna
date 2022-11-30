@@ -42,7 +42,7 @@ def sardegna_agricoltura():
 				except Exception :
 					bando["fine"] = datetime.strptime(basedate[1].split(" - ")[1].split(":")[1].strip() , "%d/%m/%Y").timestamp()
 			else :
-				bando["fine"]= datetime.strptime("01/01/2099",  "%d/%m/%Y").timestamp()
+				bando["fine"]= datetime.strptime("01/01/1970",  "%d/%m/%Y").timestamp()
 				
 			bando["fonte"] = "sardegna_agricoltura"
 			bando["color"]= "greenyellow"
@@ -72,8 +72,8 @@ def sardegna_psr():
 				inizio = basedate.split("\n")[0].strip()  
 				resto = basedate.split("\n")[1].split("/n")
 				if len(resto)>=1 :
-					fine = resto[0].split(":")[1].strip() if resto[0].split(":")[1].strip() != "SOSPESO" else "01/01/2099"
-				proroga = basedate.split("\n")[2].split(":")[1].strip() if basedate.split("\n")[2].strip() != "" else "01/01/2099"
+					fine = resto[0].split(":")[1].strip() if resto[0].split(":")[1].strip() != "SOSPESO" else "01/01/1970"
+				proroga = basedate.split("\n")[2].split(":")[1].strip() if basedate.split("\n")[2].strip() != "" else "01/01/1970"
 			bando["inizio"] = datetime.strptime(inizio, "%d/%m/%Y").timestamp()
 			bando["fine"] = datetime.strptime(fine, "%d/%m/%Y").timestamp() if datetime.strptime(fine, "%d/%m/%Y").timestamp() > datetime.now().timestamp() else datetime.strptime(proroga, "%d/%m/%Y").timestamp()
 			bando ["proroga"] = datetime.strptime(proroga, "%d/%m/%Y").timestamp()
